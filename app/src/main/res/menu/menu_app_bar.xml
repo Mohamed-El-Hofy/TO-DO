@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/fragTasks"
+        android:icon="@drawable/ic_tasks"
+        android:title="@string/Tasks"
+        app:showAsAction="never"
+
+        />
+
+    <item
+        android:id="@+id/scrxollable"
+        android:title="x" />
+    <item
+        android:id="@+id/scrolxlable"
+        android:title="x" />
+    <item
+        android:id="@+id/fragSitings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/sitings"
+        app:showAsAction="never" />
+
+</menu>

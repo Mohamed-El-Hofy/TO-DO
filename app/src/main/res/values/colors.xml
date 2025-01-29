@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#5D9CEC</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
+
+    <color name="colorSecondaryContainer">#5D9CEC</color>
+    <color name="colorOnSecondaryContainer">#FFFFFF</color>
+
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceContainer">#FFFFFF</color>
+
+    <color name="colorService">#DFECDB</color>
+
+
+    <color name="colorSecondary">#5D9CEC</color>
+    <color name="red">#EC4B4B</color>
+
+
+</resources>

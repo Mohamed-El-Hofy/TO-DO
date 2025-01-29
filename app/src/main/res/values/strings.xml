@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="sitings">Sitings</string>
+    <string name="Tasks">Tasks</string>
+    <string name="click_to_add">Click To Add</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="language">Language</string>
+    <string name="enter_your_task">Enter your task</string>
+    <string name="selectDate">Select Date</string>
+    <string name="selectTime">Select Time</string>
+
+    <string-array name="language">
+        <item>عربي</item>
+        <item>English</item>
+    </string-array>
+</resources>
