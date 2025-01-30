@@ -53,6 +53,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     //Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.activity.ktx)
 
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
