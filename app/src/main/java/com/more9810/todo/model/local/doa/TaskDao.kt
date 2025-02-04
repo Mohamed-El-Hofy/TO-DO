@@ -1,16 +1,20 @@
-package com.more9810.todoapp.model.local.doa
+package com.more9810.todo.model.local.doa
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.more9810.todoapp.model.local.entety.Task
+import androidx.room.Update
+import com.more9810.todo.model.local.entety.Task
 
 @Dao
 interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addTask(task: Task)
+
+    @Update()
+    fun editeTask(task: Task)
 
     @Delete
     fun deleteTask(task: Task)
