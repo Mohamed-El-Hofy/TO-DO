@@ -1,7 +1,7 @@
 package com.more9810.todoapp.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.more9810.todoapp.model.local.entety.Task
+import com.more9810.todo.model.local.entety.Task
 
 class MyDiffer(
     private val oldList: List<Task>,

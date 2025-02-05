@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TO DO</string>
+    <string name="sitings">الاعدادات</string>
+    <string name="Tasks">المهام</string>
+    <string name="click_to_add">اضغط للحفظ</string>
+    <string name="language">اللغة</string>
+    <string name="enter_your_task">ادخل التاسك</string>
+    <string name="selectDate">اختار تاريخ</string>
+    <string name="selectTime">اختار وقت</string>
+    <string name="add_new_task">اضافة تاسك جديد</string>
+    <string name="save">حفظ</string>
+    <string name="delete">حذف</string>
+    <string name="done">Done</string>
+    <string name="requardFeild">هذا العنصر مطلوب</string>
+    <string name="english">انجليزي</string>
+    <string name="arabic">عربي</string>
+
+    <string-array name="languageArr">
+        <item>@string/arabic</item>
+        <item>@string/english</item>
+    </string-array>
+</resources>

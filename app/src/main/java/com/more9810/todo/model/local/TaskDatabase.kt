@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.more9810.todoapp.model.local.doa.TaskDao
-import com.more9810.todoapp.model.local.entety.Task
+import com.more9810.todo.model.local.doa.TaskDao
+import com.more9810.todo.model.local.entety.Task
 
 @Database(entities = [Task::class], version = 2)
 abstract class TaskDatabase : RoomDatabase() {

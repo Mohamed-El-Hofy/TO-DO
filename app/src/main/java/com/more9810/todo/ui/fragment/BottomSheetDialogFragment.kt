@@ -4,21 +4,27 @@ import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.more9810.todo.R
 import com.more9810.todo.databinding.FragmentBottomShetDialogBinding
-import com.more9810.todoapp.model.local.entety.Task
+import com.more9810.todo.model.local.entety.Task
 import java.util.Locale
+
 
 class BottomSheetDialogFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomShetDialogBinding
+
+    private var date: Long? = null
+    private var time: String? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,35 +52,62 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
     var onClickItem: ((Task) -> Unit)? = null
     private fun onClickSave() {
         binding.btnSave.setOnClickListener {
-            val taskContent = binding.etTask.text.toString()
-            val data = binding.tvDate.text.toString()
-            val time = binding.tvTime.text.toString()
 
-            if (taskContent.isBlank()) {
-                Toast.makeText(requireContext(), "!!!!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            val task = Task(task = taskContent, time = "$data :: $time")
+            if (!validateInput()) return@setOnClickListener
+            setTaskData()
 
-            onClickItem?.invoke(task)
-
-            dismiss()
         }
     }
 
+    private fun setTaskData() {
+        val taskText = binding.etTask.text.toString()
+        val task = Task(task = taskText, date = date, time = time)
+        onClickItem?.invoke(task)
+        dismiss()
+    }
+
+    private fun validateInput(): Boolean {
+        var isValid = true
+
+        if (binding.etTask.text.isNullOrBlank()) {
+            binding.etTask.error = getString(R.string.requardFeild)
+            isValid = false
+        }
+
+        if (date == null) {
+            binding.tvDate.error = getString(R.string.requardFeild)
+            isValid = false
+        }
+
+        if (time.isNullOrBlank()) {
+            binding.tvTime.error = getString(R.string.requardFeild)
+            isValid = false
+        }
+
+        return isValid
+    }
+
     private fun getDate() {
-        val date = MaterialDatePicker.Builder.datePicker().build()
-        date.show(getChildFragmentManager(), "")
-        date.addOnPositiveButtonClickListener {
+        val constraintsBuilder =
+            CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setCalendarConstraints(constraintsBuilder.build())
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+
+        datePicker.show(getChildFragmentManager(), "")
+        datePicker.addOnPositiveButtonClickListener {
+
             val dateFormat =
-                SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(date.selection)
-            Log.d("more1010", "getDate: ${date.selection}")
+                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(datePicker.selection)
             binding.tvDate.text = dateFormat
         }
+        date = datePicker.selection
     }
 
     @SuppressLint("SetTextI18n")
     private fun getTime() {
+
         val isSystem24Hour = is24HourFormat(activity?.applicationContext)
         val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val picker =
@@ -84,7 +117,8 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
         picker.addOnPositiveButtonClickListener {
             var hour = picker.hour
             val minutes = picker.minute
-            var time = ""
+
+
             if (hour in 0..11) {
                 time = if (hour == 0) {
                     "12:$minutes AM"
@@ -102,7 +136,6 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
 
             binding.tvTime.text = time
         }
-
     }
 
 

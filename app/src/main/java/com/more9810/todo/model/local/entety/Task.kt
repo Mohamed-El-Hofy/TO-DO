@@ -1,4 +1,4 @@
-package com.more9810.todoapp.model.local.entety
+package com.more9810.todo.model.local.entety
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -11,6 +11,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
     val task: String,
+    val date: Long? = null,
     val time: String? = null,
     val isComplete: Boolean = false,
 ) : Parcelable

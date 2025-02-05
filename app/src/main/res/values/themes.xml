@@ -3,7 +3,15 @@
     <style name="Base.Theme.TODO" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+
+
+        <item name="colorOnSecondaryContainer">@color/colorPrimary</item>
+
+        <item name="colorSurfaceContainer">@color/white</item>
+        <item name="colorSurface">@color/colorService</item>
+
     </style>
 
     <style name="Theme.TODO" parent="Base.Theme.TODO" />
@@ -15,4 +23,21 @@
         <item name="android:theme">@style/Theme.MaterialComponents</item>
 
     </style>
+
+    <style name="btnNotDon" parent="Widget.Material3.Button">
+        <item name="iconSize">28dp</item>
+        <item name="background">@color/colorPrimary</item>
+        <item name="icon">@drawable/ic_done</item>
+        <item name="iconGravity">textEnd</item>
+        <item name="cornerRadius">10dp</item>
+
+    </style>
+
+    <style name="btnDon" parent="Widget.Material3.Button">
+        <item name="cornerRadius">10dp</item>
+        <item name="android:textColor">@color/colorDon</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+
+    </style>
+
 </resources>

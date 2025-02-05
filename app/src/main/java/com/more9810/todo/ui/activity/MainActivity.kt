@@ -1,9 +1,10 @@
 package com.more9810.todo.ui.activity
 
+import LocaleHelper
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -14,9 +15,11 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.more9810.todo.R
 import com.more9810.todo.databinding.ActivityHomeBinding
+import com.more9810.todo.model.local.TaskDatabase
 import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -28,11 +31,19 @@ class MainActivity : AppCompatActivity() {
         splashScreen = installSplashScreen()
         setupSplashScreen()
         binding = ActivityHomeBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(binding.root)
 
+        localizeLang()
         systemBars()
         setup()
+    }
+
+    private fun localizeLang() {
+        val sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("app_lang", Locale.getDefault().language)
+        LocaleHelper.setLocale(this, lang ?: "en")
+        LocaleHelper.loadLocale(this)
     }
 
     private fun setup() {
@@ -55,21 +66,21 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             return@setOnItemSelectedListener true
         }
-        binding.bottomNavigation.selectedItemId = R.id.fragTasks
+        binding.bottomNavigation.selectedItemId = R.id.fragSitings
 
     }
 
     private fun onFabClicked() {
         binding.btnFab.setOnClickListener {
             val dialog = BottomSheetDialogFragment()
+
+            dialog.show(supportFragmentManager, BottomSheetDialogFragment().tag)
             dialog.onClickItem = { task ->
+                TaskDatabase.getInstance().getDao().addTask(task)
                 val fragment =
                     supportFragmentManager.findFragmentById(R.id.frameContainer) as? TasksFragment
-                fragment?.addTaskToList(task)
+                fragment?.refreshData()
             }
-            dialog.show(supportFragmentManager, BottomSheetDialogFragment().tag)
-
-
         }
     }
 
