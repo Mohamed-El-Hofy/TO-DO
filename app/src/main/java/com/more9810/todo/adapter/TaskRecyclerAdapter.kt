@@ -38,7 +38,7 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bindView(item[position], position)
-        holder.onDeleteTask(item[position], position, onClickDelete)
+        holder.onClickEditeOrDeleteTask(item[position], position, onClickDelete, onClickEdite)
         holder.onClickDon(item[position], position, onClickDone)
         holder.onClickRoot(item[position], position, onClickRoot)
 
@@ -48,24 +48,33 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
 
         fun bindView(task: Task, position: Int) {
             binding.content.tvTask.text = task.task
-//            val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(task.date ?:0)
-//            binding.content.tvDate.text = date
             binding.content.tvTime.text = task.time
-
-
         }
 
-        fun onDeleteTask(task: Task, position: Int, onClickDelete: OnItemClickListener?) {
-
+        fun onClickEditeOrDeleteTask(
+            task: Task,
+            position: Int,
+            onClickDelete: OnItemClickListener?,
+            onClickEdite: OnItemClickListener?,
+        ) {
+            binding.leftView.isClickable = false
+            binding.rightView.isClickable = false
             val swipeLayout = binding.swipeLayout
             swipeLayout.setOnActionsListener(object : SwipeLayout.SwipeActionsListener {
                 override fun onOpen(direction: Int, isContinuous: Boolean) {
                     binding.leftView.isClickable = true
+                    binding.rightView.isClickable = true
                     when (direction) {
                         SwipeLayout.RIGHT -> {
                             binding.leftView.setOnClickListener {
                                 if (onClickDelete == null) return@setOnClickListener
                                 onClickDelete.onItemClick(task, position)
+                            }
+                        }
+                        SwipeLayout.LEFT -> {
+                            binding.rightView.setOnClickListener {
+                                if (onClickEdite == null) return@setOnClickListener
+                                onClickEdite.onItemClick(task, position)
                             }
                         }
 
@@ -74,6 +83,7 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
 
                 override fun onClose() {
                     binding.leftView.isClickable = false
+                    binding.rightView.isClickable = false
                 }
             })
         }
@@ -132,9 +142,12 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                 onClickRoot.onItemClick(task, position)
             }
         }
+
+
     }
 
     var onClickDelete: OnItemClickListener? = null
+    var onClickEdite: OnItemClickListener? = null
     var onClickDone: OnItemClickListener? = null
     var onClickRoot: OnItemClickListener? = null
 

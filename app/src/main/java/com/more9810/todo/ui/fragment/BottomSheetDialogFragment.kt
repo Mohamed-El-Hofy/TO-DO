@@ -2,6 +2,7 @@ package com.more9810.todo.ui.fragment
 
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.more9810.todo.R
 import com.more9810.todo.databinding.FragmentBottomShetDialogBinding
 import com.more9810.todo.model.local.entety.Task
+import com.more9810.todoapp.utils.Const
 import java.util.Locale
 
 
@@ -36,33 +38,65 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup()
+        val arg = arguments ?: return
+        val isAddNewTask = arg.getBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY)
+
+        val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arg.getParcelable(Const.EDITE_TASK_KEY, Task::class.java)
+        } else {
+            arg.getParcelable(Const.EDITE_TASK_KEY)
+        }
+
+
+        if (isAddNewTask) {
+            addOrUpdateTask(isAddNewTask)
+        } else {
+
+            binding.etTask.setText(task?.task)
+            binding.tvDate.text = task?.date.toString()
+            binding.tvTime.text = task?.time.toString()
+            addOrUpdateTask(isAddNewTask)
+        }
+
+
     }
 
-    private fun setup() {
+    private fun addOrUpdateTask(isAddNewTask: Boolean) {
         binding.tvDate.setOnClickListener {
             getDate()
         }
         binding.tvTime.setOnClickListener {
             getTime()
         }
-        onClickSave()
+        onClickSave(isAddNewTask)
     }
 
-    var onClickItem: ((Task) -> Unit)? = null
-    private fun onClickSave() {
+
+    private fun onClickSave(isAddNewTask: Boolean) {
         binding.btnSave.setOnClickListener {
-
             if (!validateInput()) return@setOnClickListener
-            setTaskData()
-
+            setTaskData(isAddNewTask)
         }
     }
 
-    private fun setTaskData() {
-        val taskText = binding.etTask.text.toString()
-        val task = Task(task = taskText, date = date, time = time)
-        onClickItem?.invoke(task)
+    private fun setTaskData(isAddNewTask: Boolean) {
+        if (isAddNewTask) {
+            val taskText = binding.etTask.text.toString()
+            val task = Task(task = taskText, date = date, time = time)
+            if (onAddNewTask == null) return
+            onAddNewTask?.onClickSave(task, null)
+
+        } else {
+            val taskText = binding.etTask.text.toString()
+            val task = Task(task = taskText, date = date, time = time)
+            if (onEditeTask == null) return
+            onEditeTask?.onClickSave(task, null)
+        }
+
+
+
+
+
         dismiss()
     }
 
@@ -103,6 +137,8 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
             binding.tvDate.text = dateFormat
         }
         date = datePicker.selection
+
+        // Log.d("more1010", "getDate: ${date}")
     }
 
     @SuppressLint("SetTextI18n")
@@ -138,5 +174,11 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    var onAddNewTask: OnClickSaveTask? = null
+    var onEditeTask: OnClickSaveTask? = null
+
+    fun interface OnClickSaveTask {
+        fun onClickSave(task: Task, position: Int?)
+    }
 
 }

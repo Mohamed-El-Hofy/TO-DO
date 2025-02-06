@@ -5,15 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.more9810.todo.adapter.TaskRecyclerAdapter
 import com.more9810.todo.databinding.FragmentTasksBinding
 import com.more9810.todo.model.local.TaskDatabase
 import com.more9810.todo.model.local.entety.Task
+import com.more9810.todoapp.utils.Const
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import java.util.Calendar
 
 class TasksFragment : Fragment() {
 
 
-    private lateinit var binding: FragmentTasksBinding
+    private var _binding: FragmentTasksBinding? = null
+    private val binding get() = _binding!!
     private var adapter = TaskRecyclerAdapter()
 
     private val db = TaskDatabase.getInstance().getDao()
@@ -21,7 +26,7 @@ class TasksFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentTasksBinding.inflate(inflater, container, false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -33,17 +38,43 @@ class TasksFragment : Fragment() {
         binding.rvTask.adapter = adapter
 
 
+        onDeleteTask()
+        onEditeTask()
+
+        updateTask()
+        initCalenderView()
+    }
+
+    private fun onDeleteTask() {
         adapter.onClickDelete = TaskRecyclerAdapter.OnItemClickListener { task, position ->
             db.deleteTask(task)
             adapter.notifyItemRemoved(position)
-            refreshData()
+            adapter.setItem(db.getAllTask())
+            val snackbar = Snackbar.make(requireContext(), requireView(), "", Snackbar.LENGTH_LONG)
+            snackbar.setText("Task Delete Successfully")
+            snackbar.setAction("Undo") {
+                db.addTask(task)
+                adapter.setItem(db.getAllTask())
+            }
+            snackbar.show()
         }
-
-        updateTask()
-
     }
 
-    fun refreshData() {
+    private fun onEditeTask() {
+        adapter.onClickEdite = TaskRecyclerAdapter.OnItemClickListener { task, position ->
+            val dialogEdite = BottomSheetDialogFragment()
+
+            val arg = Bundle()
+            arg.putParcelable(Const.EDITE_TASK_KEY, task)
+            arg.putBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY, false)
+            dialogEdite.arguments = arg
+
+            dialogEdite.show(childFragmentManager, BottomSheetDialogFragment().tag)
+        }
+    }
+
+    fun addNewTask(task: Task) {
+        db.addTask(task)
         adapter.setItem(db.getAllTask())
     }
 
@@ -57,9 +88,32 @@ class TasksFragment : Fragment() {
 
             }
 
-            refreshData()
+            adapter.setItem(db.getAllTask())
             adapter.notifyDataSetChanged()
         }
     }
 
+    private fun initCalenderView() {
+        binding.calendarView.selectedDate = CalendarDay.today()
+
+        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.YEAR, date.year)
+            calendar.set(Calendar.MONTH, date.month - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, date.day)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            if (selected) {
+                val tasks = db.getTaskByDate(calendar.timeInMillis)
+                adapter.setItem(tasks)
+            }
+
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

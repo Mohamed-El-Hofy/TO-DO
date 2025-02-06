@@ -13,12 +13,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsCompat.CONSUMED
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import com.more9810.todo.R
 import com.more9810.todo.databinding.ActivityHomeBinding
-import com.more9810.todo.model.local.TaskDatabase
 import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
+import com.more9810.todoapp.utils.Const
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var splashScreen: SplashScreen
     private var isSplashScreenViewed: Boolean = true
 
+    private var tasksFragment: TasksFragment? = null
+    private var settingsFragment: SettingsFragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         splashScreen = installSplashScreen()
@@ -34,9 +37,16 @@ class MainActivity : AppCompatActivity() {
         //enableEdgeToEdge()
         setContentView(binding.root)
 
+        tasksFragment = supportFragmentManager.findFragmentByTag("TaskFragment()") as? TasksFragment
+            ?: TasksFragment()
+        settingsFragment =
+            supportFragmentManager.findFragmentByTag("SettingsFragment()") as? SettingsFragment
+                ?: SettingsFragment()
+
         localizeLang()
         systemBars()
-        setup()
+        setNavigation()
+        onFabClicked()
     }
 
     private fun localizeLang() {
@@ -46,43 +56,51 @@ class MainActivity : AppCompatActivity() {
         LocaleHelper.loadLocale(this)
     }
 
-    private fun setup() {
-        setNavigation()
-        onFabClicked()
-    }
 
     private fun setNavigation() {
         val menu = binding.bottomNavigation.menu
         menu.getItem(1).setEnabled(false)
         menu.getItem(2).setEnabled(false)
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.fragTasks -> {
+                    showFragment(tasksFragment!!, "TaskFragment()")
+                    binding.toolbar.tvAppBarTitle.text = "TO DO LIST"
+                }
 
-            val fragment = when (menuItem.itemId) {
-                R.id.fragTasks -> TasksFragment()
-                R.id.fragSitings -> SettingsFragment()
-                else -> TasksFragment()
+                R.id.fragSitings -> {
+                    showFragment(settingsFragment!!, "SettingsFragment()")
+                    binding.toolbar.tvAppBarTitle.text = "Setteings"
+                }
+
+                else -> showFragment(TasksFragment(), "")
             }
-            supportFragmentManager.beginTransaction().replace(R.id.frameContainer, fragment)
-                .commit()
             return@setOnItemSelectedListener true
         }
-        binding.bottomNavigation.selectedItemId = R.id.fragSitings
+        binding.bottomNavigation.selectedItemId = R.id.fragTasks
+    }
 
+    private fun showFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction().replace(R.id.frameContainer, fragment, tag)
+            .commit()
     }
 
     private fun onFabClicked() {
         binding.btnFab.setOnClickListener {
-            val dialog = BottomSheetDialogFragment()
+            val dialogAdd = BottomSheetDialogFragment()
 
-            dialog.show(supportFragmentManager, BottomSheetDialogFragment().tag)
-            dialog.onClickItem = { task ->
-                TaskDatabase.getInstance().getDao().addTask(task)
-                val fragment =
-                    supportFragmentManager.findFragmentById(R.id.frameContainer) as? TasksFragment
-                fragment?.refreshData()
+            val arg = dialogAdd.arguments ?: Bundle()
+            arg.putBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY, true)
+            dialogAdd.arguments = arg
+
+            dialogAdd.show(supportFragmentManager, BottomSheetDialogFragment().tag)
+            dialogAdd.onAddNewTask = BottomSheetDialogFragment.OnClickSaveTask { task, _ ->
+                tasksFragment?.addNewTask(task)
+
             }
         }
     }
+
 
     private fun setupSplashScreen() {
         splashScreen.setKeepOnScreenCondition { isSplashScreenViewed }

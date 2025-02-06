@@ -15,6 +15,8 @@
     <string name="requardFeild">Requard Field</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
+    <string name="edite">Edite</string>
+    <string name="edite_task">Edite Task</string>
 
     <string-array name="languageArr">
         <item>@string/arabic</item>
