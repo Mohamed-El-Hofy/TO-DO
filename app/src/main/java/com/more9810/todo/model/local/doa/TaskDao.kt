@@ -22,6 +22,6 @@ interface TaskDao {
     @Query("select * from Task order by id")
     fun getAllTask(): List<Task>
 
-    @Query("select * from Task where time= :time order by id")
-    fun getTaskByDate(time: Long): List<Task>
+    @Query("select * from Task where date= :date order by id")
+    fun getTaskByDate(date: Long): List<Task>
 }

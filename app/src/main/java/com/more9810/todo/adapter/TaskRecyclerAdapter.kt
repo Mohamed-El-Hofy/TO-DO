@@ -24,43 +24,68 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
         )
     }
 
+
+    override fun getItemCount() = item.size
+
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        val currentItem = item[position]
+        holder.bindView(currentItem, position)
+        holder.onClickEditeOrDeleteTask(currentItem, position, onClickDelete, onClickEdite)
+        holder.onClickDon(currentItem, position, onClickDone)
+        holder.onClickRoot(currentItem, position, onClickRoot)
+
+    }
+
     fun setItem(newItem: List<Task>) {
         val diffCallback = MyDiffer(item, newItem)
         val diffCourses = DiffUtil.calculateDiff(diffCallback)
         item.clear()
         item.addAll(newItem)
         diffCourses.dispatchUpdatesTo(this)
-
     }
 
-
-    override fun getItemCount() = item.size
-
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bindView(item[position], position)
-        holder.onDeleteTask(item[position], position, onClickDelete)
-        holder.onClickDon(item[position], position, onClickDone)
-        holder.onClickRoot(item[position], position, onClickRoot)
-
+    fun addNewTask(task: Task, position: Int) {
+        item.add(position, task)
+        notifyItemInserted(position)
+        notifyItemRangeChanged(position, item.size - position)
     }
 
+    fun updateTask(task: Task, position: Int) {
+        if (position in item.indices) {
+            item[position] = task
+            notifyItemChanged(position)
+        }
+    }
+
+    fun deleteTask(task: Task, position: Int) {
+        if (position in item.indices) {
+            item.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, item.size - position)
+
+        }
+
+    }
     class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindView(task: Task, position: Int) {
             binding.content.tvTask.text = task.task
-//            val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(task.date ?:0)
-//            binding.content.tvDate.text = date
             binding.content.tvTime.text = task.time
-
-
         }
 
-        fun onDeleteTask(task: Task, position: Int, onClickDelete: OnItemClickListener?) {
-
+        fun onClickEditeOrDeleteTask(
+            task: Task,
+            position: Int,
+            onClickDelete: OnItemClickListener?,
+            onClickEdite: OnItemClickListener?,
+        ) {
+            binding.leftView.isClickable = false
+            binding.rightView.isClickable = false
             val swipeLayout = binding.swipeLayout
             swipeLayout.setOnActionsListener(object : SwipeLayout.SwipeActionsListener {
                 override fun onOpen(direction: Int, isContinuous: Boolean) {
                     binding.leftView.isClickable = true
+                    binding.rightView.isClickable = true
                     when (direction) {
                         SwipeLayout.RIGHT -> {
                             binding.leftView.setOnClickListener {
@@ -69,11 +94,19 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                             }
                         }
 
+                        SwipeLayout.LEFT -> {
+                            binding.rightView.setOnClickListener {
+                                if (onClickEdite == null) return@setOnClickListener
+                                onClickEdite.onItemClick(task, position)
+                            }
+                        }
+
                     }
                 }
 
                 override fun onClose() {
                     binding.leftView.isClickable = false
+                    binding.rightView.isClickable = false
                 }
             })
         }
@@ -99,13 +132,11 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                 btn.text = ContextCompat.getString(btn.context, R.string.done)
                 binding.content.tvTask.setTextColor(
                     ContextCompat.getColor(
-                        btn.context,
-                        R.color.colorDon
+                        btn.context, R.color.colorDon
                     )
                 )
                 binding.content.lineLeft.background = ContextCompat.getDrawable(
-                    btn.context,
-                    R.drawable.item_drow_shape_delete_secondry
+                    btn.context, R.drawable.item_drow_shape_delete_secondry
                 )
             } else {
                 btn.background = ContextCompat.getDrawable(btn.context, R.drawable.bg_btn_not_done)
@@ -113,8 +144,7 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                 btn.text = ""
                 binding.content.tvTask.setTextColor(
                     ContextCompat.getColor(
-                        btn.context,
-                        R.color.colorPrimary
+                        btn.context, R.color.colorPrimary
                     )
                 )
                 binding.content.lineLeft.background =
@@ -132,11 +162,14 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                 onClickRoot.onItemClick(task, position)
             }
         }
+
+
     }
 
     var onClickDelete: OnItemClickListener? = null
+    var onClickEdite: OnItemClickListener? = null
     var onClickDone: OnItemClickListener? = null
-    var onClickRoot: OnItemClickListener? = null
+    private var onClickRoot: OnItemClickListener? = null
 
     fun interface OnItemClickListener {
         fun onItemClick(task: Task, position: Int)

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.more9810.todo.R
@@ -15,7 +14,8 @@ import com.more9810.todo.databinding.FragmentSetnigsBinding
 import java.util.Locale
 
 class SettingsFragment : Fragment() {
-
+    private var _binding: FragmentSetnigsBinding? = null
+    private val binding get() = _binding!!
     companion object {
         fun getInstance(onSelectLanguage: OnSelectLanguage?): SettingsFragment {
             val fragment = SettingsFragment()
@@ -24,13 +24,12 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private lateinit var binding: FragmentSetnigsBinding
-    private var toolbar: TextView? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentSetnigsBinding.inflate(inflater, container, false)
+        _binding = FragmentSetnigsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -76,5 +75,11 @@ class SettingsFragment : Fragment() {
 
     private fun setupMoodNight() {
 
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

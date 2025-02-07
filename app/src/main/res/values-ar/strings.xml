@@ -19,4 +19,5 @@
         <item>@string/arabic</item>
         <item>@string/english</item>
     </string-array>
+    <string name="edite">تعديل</string>
 </resources>
