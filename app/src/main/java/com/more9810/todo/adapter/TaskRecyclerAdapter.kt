@@ -12,7 +12,6 @@ import com.more9810.todo.model.local.entety.Task
 import com.more9810.todoapp.adapter.MyDiffer
 import com.zerobranch.layout.SwipeLayout
 
-//////////
 class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHolder>() {
 
     private var item: MutableList<Task> = mutableListOf()
