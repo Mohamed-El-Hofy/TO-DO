@@ -41,36 +41,45 @@ class TasksFragment : Fragment() {
         onDeleteTask()
         onEditeTask()
 
-        updateTask()
+        updateTaskState()
         initCalenderView()
     }
 
     private fun onDeleteTask() {
         adapter.onClickDelete = TaskRecyclerAdapter.OnItemClickListener { task, position ->
             db.deleteTask(task)
-            adapter.notifyItemRemoved(position)
+            adapter.deleteTask(task, position)
             adapter.setItem(db.getAllTask())
-            val snackbar = Snackbar.make(requireContext(), requireView(), "", Snackbar.LENGTH_LONG)
-            snackbar.setText("Task Delete Successfully")
-            snackbar.setAction("Undo") {
-                db.addTask(task)
-                adapter.setItem(db.getAllTask())
-            }
-            snackbar.show()
+
+            unDoDeleteTask(task, position)
         }
     }
 
-    private fun onEditeTask() {
-        adapter.onClickEdite = TaskRecyclerAdapter.OnItemClickListener { task, position ->
-            val dialogEdite = BottomSheetDialogFragment()
+    private fun unDoDeleteTask(task: Task, position: Int) {
+        val snackBar = Snackbar.make(requireContext(), requireView(), "", Snackbar.LENGTH_LONG)
+        snackBar.setText("Task Delete Successfully")
+        snackBar.setAction("Undo") {
+            db.addTask(task)
+            adapter.addNewTask(task, position)
+        }
+        snackBar.show()
+    }
 
+    private fun onEditeTask() {
+        val dialogEdite = BottomSheetDialogFragment()
+        adapter.onClickEdite = TaskRecyclerAdapter.OnItemClickListener { task, position ->
             val arg = Bundle()
             arg.putParcelable(Const.EDITE_TASK_KEY, task)
+            arg.putInt(Const.EDITE_TASK_POSITION, position)
             arg.putBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY, false)
             dialogEdite.arguments = arg
-
             dialogEdite.show(childFragmentManager, BottomSheetDialogFragment().tag)
         }
+        dialogEdite.onEditeTask =
+            BottomSheetDialogFragment.OnClickSaveTaskFromEdite { mTask, mPosition ->
+                db.editeTask(mTask)
+                adapter.updateTask(mTask, mPosition)
+            }
     }
 
     fun addNewTask(task: Task) {
@@ -79,17 +88,11 @@ class TasksFragment : Fragment() {
     }
 
 
-    private fun updateTask() {
-        adapter.onClickDone = TaskRecyclerAdapter.OnItemClickListener { task, _ ->
-            if (task.isComplete) {
-                db.editeTask(Task(task.id, task.task, task.date, task.time, isComplete = false))
-            } else {
-                db.editeTask(Task(task.id, task.task, task.date, task.time, isComplete = true))
-
-            }
-
-            adapter.setItem(db.getAllTask())
-            adapter.notifyDataSetChanged()
+    private fun updateTaskState() {
+        adapter.onClickDone = TaskRecyclerAdapter.OnItemClickListener { task, position ->
+            task.isComplete = !task.isComplete
+            db.editeTask(task)
+            adapter.updateTask(task, position)
         }
     }
 

@@ -13,6 +13,6 @@ data class Task(
     val task: String,
     val date: Long? = null,
     val time: String? = null,
-    val isComplete: Boolean = false,
+    var isComplete: Boolean = false,
 ) : Parcelable
 

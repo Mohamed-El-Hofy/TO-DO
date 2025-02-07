@@ -17,6 +17,8 @@
     <string name="arabic">Arabic</string>
     <string name="edite">Edite</string>
     <string name="edite_task">Edite Task</string>
+    <string name="cantEditeThisTask">Can\'t edite this task</string>
+    <string name="standerFormateDate">dd/MM/yyyy</string>
 
     <string-array name="languageArr">
         <item>@string/arabic</item>

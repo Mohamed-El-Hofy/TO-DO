@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             dialogAdd.arguments = arg
 
             dialogAdd.show(supportFragmentManager, BottomSheetDialogFragment().tag)
-            dialogAdd.onAddNewTask = BottomSheetDialogFragment.OnClickSaveTask { task, _ ->
+            dialogAdd.onAddNewTask = BottomSheetDialogFragment.OnClickSaveTaskFromNew { task ->
                 tasksFragment?.addNewTask(task)
 
             }
