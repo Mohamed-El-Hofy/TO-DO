@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.fragSitings -> {
-                    return@setOnItemSelectedListener false
                     showFragment(settingsFragment!!, "SettingsFragment()")
                     binding.toolbar.tvAppBarTitle.text = "Setteings"
                 }
