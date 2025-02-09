@@ -19,7 +19,7 @@ import com.more9810.todo.databinding.ActivityHomeBinding
 import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
-import com.more9810.todoapp.utils.Const
+import com.more9810.todo.utils.Const
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -33,9 +33,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         splashScreen = installSplashScreen()
         setupSplashScreen()
+
         binding = ActivityHomeBinding.inflate(layoutInflater)
-        //enableEdgeToEdge()
         setContentView(binding.root)
+
+        systemBars()
 
         tasksFragment = supportFragmentManager.findFragmentByTag("TaskFragment()") as? TasksFragment
             ?: TasksFragment()
@@ -44,7 +46,6 @@ class MainActivity : AppCompatActivity() {
                 ?: SettingsFragment()
 
         localizeLang()
-        systemBars()
         setNavigation()
         onFabClicked()
     }
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         val menu = binding.bottomNavigation.menu
         menu.getItem(1).setEnabled(false)
         menu.getItem(2).setEnabled(false)
+
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.fragTasks -> {
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.fragSitings -> {
+                    return@setOnItemSelectedListener false
                     showFragment(settingsFragment!!, "SettingsFragment()")
                     binding.toolbar.tvAppBarTitle.text = "Setteings"
                 }
@@ -89,14 +92,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnFab.setOnClickListener {
             val dialogAdd = BottomSheetDialogFragment()
 
-            val arg = dialogAdd.arguments ?: Bundle()
-            arg.putBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY, true)
-            dialogAdd.arguments = arg
-
             dialogAdd.show(supportFragmentManager, BottomSheetDialogFragment().tag)
+
             dialogAdd.onAddNewTask = BottomSheetDialogFragment.OnClickSaveTaskFromNew { task ->
                 tasksFragment?.addNewTask(task)
-
             }
         }
     }

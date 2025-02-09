@@ -2,13 +2,13 @@ package com.more9810.todo.ui.fragment
 
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
-import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.BundleCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
@@ -18,82 +18,62 @@ import com.google.android.material.timepicker.TimeFormat
 import com.more9810.todo.R
 import com.more9810.todo.databinding.FragmentBottomShetDialogBinding
 import com.more9810.todo.model.local.entety.Task
-import com.more9810.todoapp.utils.Const
+import com.more9810.todo.utils.Const
 import java.util.Locale
 
 
 class BottomSheetDialogFragment : BottomSheetDialogFragment() {
-    private lateinit var binding: FragmentBottomShetDialogBinding
-
+    private  var _binding: FragmentBottomShetDialogBinding? = null
+    private val binding get() = _binding!!
     private var date: Long? = null
     private var time: String? = null
-    private var editedTask: Task? = null
-
+    private lateinit var argTask: Task
+    private var isEditeTask = false
+    private var position = -1
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentBottomShetDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentBottomShetDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val arg = arguments ?: return
-        val isAddNewTask = arg.getBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY)
+        arguments?.let {
+            isEditeTask = it.getBoolean(Const.COM_FROM_EDITE_TASK)
+            BundleCompat.getParcelable(it, Const.EDITE_TASK_KEY, Task::class.java)?.let { task ->
+                argTask = task
 
-        editedTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arg.getParcelable(Const.EDITE_TASK_KEY, Task::class.java)
-        } else {
-            arg.getParcelable(Const.EDITE_TASK_KEY)
+            }
+            position = it.getInt(Const.EDITE_TASK_POSITION, -1)
         }
-        val position = arg.getInt(Const.EDITE_TASK_POSITION)
 
-
-        checkItEditeOrAdd(isAddNewTask, position, arg)
+        fullInput()
+        onClickSave()
+        selectDateAndTime()
     }
 
-    private fun checkItEditeOrAdd(addNewTask: Boolean, position: Int, arg: Bundle) {
-        if (addNewTask) {
-            addOrUpdateTask(addNewTask, position)
-        } else {
-            if (arg.isEmpty) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.cantEditeThisTask),
-                    Toast.LENGTH_SHORT
-                ).show()
-                dismiss()
-                return
-            }
-            date = editedTask?.date
-            time = editedTask?.time
+
+    private fun fullInput() {
+        if (isEditeTask && argTask != null) {
+            date = argTask.date
+            time = argTask.time
             binding.tvAddTaskLogo.text = resources.getString(R.string.edite_task)
-            binding.etTask.setText(editedTask?.task)
+            binding.etTask.setText(argTask.task)
             binding.tvDate.text = SimpleDateFormat(
                 resources.getString(R.string.standerFormateDate), Locale.getDefault()
-            ).format(editedTask?.date ?: 0)
-            binding.tvTime.text = editedTask?.time ?: "0"
-            addOrUpdateTask(addNewTask, position)
+            ).format(date ?: 0)
+            binding.tvTime.text = time ?: "0"
         }
     }
 
-    private fun addOrUpdateTask(isAddNewTask: Boolean, position: Int) {
-        binding.tvDate.setOnClickListener {
-            getDate()
-        }
-        binding.tvTime.setOnClickListener {
-            getTime()
-        }
-        onClickSave(isAddNewTask, position)
-    }
+    private fun onClickSave() {
 
-
-    private fun onClickSave(isAddNewTask: Boolean, position: Int) {
         binding.btnSave.setOnClickListener {
             if (!validateInput()) return@setOnClickListener
-            if (isAddNewTask) addNewTask()
-            else editeTask(position)
+            if (isEditeTask) editeTask(position)
+            else addNewTask()
         }
     }
 
@@ -106,12 +86,22 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun editeTask(position: Int) {
-        val taskText = binding.etTask.text.toString()
 
-        val task = Task(editedTask?.id, taskText, date, time, editedTask?.isComplete ?: false)
+        val taskText = binding.etTask.text.toString()
+        val task = argTask.copy(task = taskText, date = date, time = time)
+
         if (onEditeTask == null) return
         onEditeTask?.onClickSave(task, position)
         dismiss()
+    }
+
+    private fun selectDateAndTime() {
+        binding.tvDate.setOnClickListener {
+            getDate()
+        }
+        binding.tvTime.setOnClickListener {
+            getTime()
+        }
     }
 
     private fun validateInput(): Boolean {
