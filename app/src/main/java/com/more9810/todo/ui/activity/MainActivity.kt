@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     private var settingsFragment: SettingsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        changThem()
         super.onCreate(savedInstanceState)
+        changThem()
         splashScreen = installSplashScreen()
         setupSplashScreen()
 
@@ -57,8 +57,13 @@ class MainActivity : AppCompatActivity() {
     private fun changThem() {
         val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
         val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
-        if (nightMode == true){
+
+ if (nightMode == true && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            recreate()
+        } else if (nightMode == false && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            recreate()
         }
     }
 
