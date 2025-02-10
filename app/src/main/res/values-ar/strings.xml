@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TO DO</string>
-    <string name="sitings">الاعدادات</string>
+    <string name="settings">الاعدادات</string>
     <string name="Tasks">المهام</string>
     <string name="click_to_add">اضغط للحفظ</string>
     <string name="language">اللغة</string>

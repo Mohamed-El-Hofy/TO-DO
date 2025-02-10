@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        localizeLang()
+       // localizeLang()
         setNavigation()
         onFabClicked()
     }
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.fragSitings -> {
                     showFragment(settingsFragment!!, "SettingsFragment()")
-                    binding.toolbar.tvAppBarTitle.text = "Setteings"
+                    binding.toolbar.tvAppBarTitle.text = resources.getString(R.string.settings)
                 }
 
                 else -> showFragment(TasksFragment(), "")
