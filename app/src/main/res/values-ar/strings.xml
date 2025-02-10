@@ -20,4 +20,7 @@
         <item>@string/english</item>
     </string-array>
     <string name="edite">تعديل</string>
+    <string name="night_mode">الوضع الليلي</string>
+    <string name="edite_task">تعديل التاسك</string>
+    <string name="cantEditeThisTask">لا يمكن تعديل التاسك</string>
 </resources>

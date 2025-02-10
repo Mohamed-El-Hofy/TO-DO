@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import com.more9810.todo.R
 import com.more9810.todo.databinding.FragmentSetnigsBinding
-import java.util.Locale
+import com.more9810.todo.utils.Const
 
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSetnigsBinding? = null
@@ -27,34 +24,35 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         setupLanguage()
         setupMoodNight()
     }
 
 
-    private fun setupLanguage() {
-        val list = resources.getStringArray(R.array.languageArr)
-        val arrAdapter = ArrayAdapter(requireContext(), R.layout.item_tv_setting, list)
+     fun setupMoodNight() {
+        val sharedPreferences = activity?.getSharedPreferences("Mode", Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
 
-        binding.autoCompLanguage.setAdapter(arrAdapter)
+        binding.switchMode.isChecked = nightMode ?: false
+        if (nightMode == true){
+            binding.switchMode.isChecked =true
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
 
-        binding.autoCompLanguage.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
-                val item = parent.getItemAtPosition(position).toString()
-                val langCode = when (item) {
-                    "Arabic" -> "ar"
-                    "English" -> "en"
-                    else -> Locale.getDefault().language
-                }
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                editor?.putBoolean(Const.NIGHT_MODE,true)
+                editor?.apply()
 
-                val sharedPref =
-                    requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
-                sharedPref.edit().putString("app_lang", langCode).apply()
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                editor?.putBoolean(Const.NIGHT_MODE, false)
+                editor?.apply()
 
-                onSelectLanguage?.onLangSelected(langCode)
-                requireActivity().recreate()
-                Toast.makeText(requireContext(), item, Toast.LENGTH_SHORT).show()
             }
+        }
+
     }
 
     private var onSelectLanguage: OnSelectLanguage? = null
@@ -63,13 +61,35 @@ class SettingsFragment : Fragment() {
         fun onLangSelected(language: String)
     }
 
-    private fun setupMoodNight() {
-
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
+
+
+//    private fun setupLanguage() {
+//        val list = resources.getStringArray(R.array.languageArr)
+//        val arrAdapter = ArrayAdapter(requireContext(), R.layout.item_tv_setting, list)
+//
+//        binding.autoCompLanguage.setAdapter(arrAdapter)
+//
+//        binding.autoCompLanguage.onItemClickListener =
+//            AdapterView.OnItemClickListener { parent, view, position, id ->
+//                val item = parent.getItemAtPosition(position).toString()
+//                val langCode = when (item) {
+//                    "Arabic" -> "ar"
+//                    "English" -> "en"
+//                    else -> Locale.getDefault().language
+//                }
+//
+//                val sharedPref =
+//                    requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
+//                sharedPref.edit().putString("app_lang", langCode).apply()
+//
+//                onSelectLanguage?.onLangSelected(langCode)
+//                requireActivity().recreate()
+//                Toast.makeText(requireContext(), item, Toast.LENGTH_SHORT).show()
+//            }
+//    }

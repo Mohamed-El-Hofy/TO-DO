@@ -30,7 +30,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:layoutDirection="rtl"
                 android:text="@string/app_name"
-                android:textColor="@color/white"
                 android:textSize="28sp"
                 android:textStyle="bold" />
         </com.google.android.material.appbar.MaterialToolbar>

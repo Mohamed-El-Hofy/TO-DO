@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -26,10 +27,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var splashScreen: SplashScreen
     private var isSplashScreenViewed: Boolean = true
-
     private var tasksFragment: TasksFragment? = null
     private var settingsFragment: SettingsFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        changThem()
         super.onCreate(savedInstanceState)
         splashScreen = installSplashScreen()
         setupSplashScreen()
@@ -45,9 +47,19 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentByTag("SettingsFragment()") as? SettingsFragment
                 ?: SettingsFragment()
 
+
+
         localizeLang()
         setNavigation()
         onFabClicked()
+    }
+
+    private fun changThem() {
+        val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
+        val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
+        if (nightMode == true){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
     }
 
     private fun localizeLang() {
