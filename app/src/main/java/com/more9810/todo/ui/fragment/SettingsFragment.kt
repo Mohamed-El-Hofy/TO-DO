@@ -16,14 +16,6 @@ import java.util.Locale
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSetnigsBinding? = null
     private val binding get() = _binding!!
-    companion object {
-        fun getInstance(onSelectLanguage: OnSelectLanguage?): SettingsFragment {
-            val fragment = SettingsFragment()
-            fragment.onSelectLanguage = onSelectLanguage
-            return fragment
-        }
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +27,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        setupLanguage()
+         setupLanguage()
         setupMoodNight()
     }
 
