@@ -11,7 +11,7 @@
     <string name="save">حفظ</string>
     <string name="delete">حذف</string>
     <string name="done">Done</string>
-    <string name="requardFeild">هذا العنصر مطلوب</string>
+    <string name="requiredField">هذا العنصر مطلوب</string>
     <string name="english">انجليزي</string>
     <string name="arabic">عربي</string>
 
@@ -23,4 +23,6 @@
     <string name="night_mode">الوضع الليلي</string>
     <string name="edite_task">تعديل التاسك</string>
     <string name="cantEditeThisTask">لا يمكن تعديل التاسك</string>
+    <string name="taskDeleteSuccessfully">تم مسح المهمه بنجاح</string>
+    <string name="undo">رجوع</string>
 </resources>

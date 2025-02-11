@@ -12,14 +12,16 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="done">Done</string>
-    <string name="requardFeild">Requard Field</string>
+    <string name="requiredField">Required Field</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
     <string name="edite">Edite</string>
     <string name="edite_task">Edite Task</string>
     <string name="cantEditeThisTask">Can\'t edite this task</string>
-    <string name="standerFormateDate" translatable="false">dd/MM/yyyy</string>
+    <string name="standerFormatDate" translatable="false">dd/MM/yyyy</string>
     <string name="night_mode">Night Mode</string>
+    <string name="taskDeleteSuccessfully">Task Delete Successfully</string>
+    <string name="undo">Undo</string>
 
     <string-array name="languageArr">
         <item>@string/arabic</item>
