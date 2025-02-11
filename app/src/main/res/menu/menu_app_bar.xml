@@ -19,7 +19,7 @@
     <item
         android:id="@+id/fragSitings"
         android:icon="@drawable/ic_settings"
-        android:title="@string/sitings"
+        android:title="@string/settings"
         app:showAsAction="never" />
 
 </menu>

@@ -31,7 +31,6 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
         holder.bindView(currentItem, position)
         holder.onClickEditeOrDeleteTask(currentItem, position, onClickDelete, onClickEdite)
         holder.onClickDon(currentItem, position, onClickDone)
-        holder.onClickRoot(currentItem, position, onClickRoot)
 
     }
 
@@ -89,14 +88,14 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
                         SwipeLayout.RIGHT -> {
                             binding.leftView.setOnClickListener {
                                 if (onClickDelete == null) return@setOnClickListener
-                                onClickDelete.onItemClick(task, position)
+                                onClickDelete.onClick(task, position)
                             }
                         }
 
                         SwipeLayout.LEFT -> {
                             binding.rightView.setOnClickListener {
                                 if (onClickEdite == null) return@setOnClickListener
-                                onClickEdite.onItemClick(task, position)
+                                onClickEdite.onClick(task, position)
                             }
                         }
 
@@ -114,7 +113,7 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
             updateTaskStateUi(task, position)
             binding.content.btnDon.setOnClickListener {
                 if (onClickDone == null) return@setOnClickListener
-                onClickDone.onItemClick(task, position)
+                onClickDone.onClick(task, position)
                 updateTaskStateUi(task, position)
             }
         }
@@ -155,22 +154,13 @@ class TaskRecyclerAdapter : RecyclerView.Adapter<TaskRecyclerAdapter.TaskViewHol
             }
         }
 
-        fun onClickRoot(task: Task, position: Int, onClickRoot: OnItemClickListener?) {
-            binding.main.setOnClickListener {
-                if (onClickRoot == null) return@setOnClickListener
-                onClickRoot.onItemClick(task, position)
-            }
-        }
-
-
     }
 
     var onClickDelete: OnItemClickListener? = null
     var onClickEdite: OnItemClickListener? = null
     var onClickDone: OnItemClickListener? = null
-    private var onClickRoot: OnItemClickListener? = null
 
     fun interface OnItemClickListener {
-        fun onItemClick(task: Task, position: Int)
+        fun onClick(task: Task, position: Int)
     }
 }

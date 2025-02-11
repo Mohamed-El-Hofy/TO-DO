@@ -4,7 +4,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="colorPrimary">#5D9CEC</color>
-    <color name="colorPrimaryDark">#141922</color>
     <color name="colorOnPrimary">#FFFFFFFF</color>
 
     <color name="colorPrimaryContainer">#5D9CEC</color>
@@ -16,13 +15,13 @@
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorSurfaceContainer">#FFFFFF</color>
 
-    <color name="colorService">#DFECDB</color>
+    <color name="colorService">#060E1E</color>
 
 
     <color name="colorSecondary">#5D9CEC</color>
     <color name="red">#EC4B4B</color>
     <color name="colorDon">#61E757</color>
 
+    <color name="colorPrimaryDark">#141922</color>
     <color name="colorOnPrimaryDark">#FFFFFFFF</color>
-
 </resources>

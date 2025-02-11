@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.more9810.todo.R
 import com.more9810.todo.adapter.TaskRecyclerAdapter
 import com.more9810.todo.databinding.FragmentTasksBinding
 import com.more9810.todo.model.local.TaskDatabase
 import com.more9810.todo.model.local.entety.Task
-import com.more9810.todoapp.utils.Const
+import com.more9810.todo.utils.Const
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
@@ -33,16 +34,16 @@ class TasksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        adapter.setItem(db.getAllTask())
-        binding.rvTask.adapter = adapter
-
-
+        initRecycler()
         onDeleteTask()
         onEditeTask()
-
         updateTaskState()
         initCalenderView()
+    }
+
+    private fun initRecycler() {
+        adapter.setItem(db.getAllTask())
+        binding.rvTask.adapter = adapter
     }
 
     private fun onDeleteTask() {
@@ -57,8 +58,8 @@ class TasksFragment : Fragment() {
 
     private fun unDoDeleteTask(task: Task, position: Int) {
         val snackBar = Snackbar.make(requireContext(), requireView(), "", Snackbar.LENGTH_LONG)
-        snackBar.setText("Task Delete Successfully")
-        snackBar.setAction("Undo") {
+        snackBar.setText(resources.getString(R.string.taskDeleteSuccessfully))
+        snackBar.setAction(resources.getString(R.string.undo)) {
             db.addTask(task)
             adapter.addNewTask(task, position)
         }
@@ -66,20 +67,21 @@ class TasksFragment : Fragment() {
     }
 
     private fun onEditeTask() {
-        val dialogEdite = BottomSheetDialogFragment()
         adapter.onClickEdite = TaskRecyclerAdapter.OnItemClickListener { task, position ->
+            val dialogEdite = BottomSheetDialogFragment()
             val arg = Bundle()
+            arg.putBoolean(Const.COM_FROM_EDITE_TASK, true)
             arg.putParcelable(Const.EDITE_TASK_KEY, task)
             arg.putInt(Const.EDITE_TASK_POSITION, position)
-            arg.putBoolean(Const.IS_COM_FROM_MAIN_ACTIVITY, false)
             dialogEdite.arguments = arg
-            dialogEdite.show(childFragmentManager, BottomSheetDialogFragment().tag)
-        }
+
         dialogEdite.onEditeTask =
             BottomSheetDialogFragment.OnClickSaveTaskFromEdite { mTask, mPosition ->
                 db.editeTask(mTask)
                 adapter.updateTask(mTask, mPosition)
             }
+        dialogEdite.show(childFragmentManager, "onEditeTask")
+    }
     }
 
     fun addNewTask(task: Task) {
@@ -99,10 +101,10 @@ class TasksFragment : Fragment() {
     private fun initCalenderView() {
         binding.calendarView.selectedDate = CalendarDay.today()
 
-        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+        binding.calendarView.setOnDateChangedListener { _, date, selected ->
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.YEAR, date.year)
-            calendar.set(Calendar.MONTH, date.month - 1)
+            calendar.set(Calendar.MONTH, date.month + 1)
             calendar.set(Calendar.DAY_OF_MONTH, date.day)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
@@ -118,5 +120,8 @@ class TasksFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        adapter.onClickDone = null
+        adapter.onClickDelete = null
+        adapter.onClickEdite =null
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TO DO</string>
-    <string name="sitings">الاعدادات</string>
+    <string name="settings">الاعدادات</string>
     <string name="Tasks">المهام</string>
     <string name="click_to_add">اضغط للحفظ</string>
     <string name="language">اللغة</string>
@@ -11,7 +11,7 @@
     <string name="save">حفظ</string>
     <string name="delete">حذف</string>
     <string name="done">Done</string>
-    <string name="requardFeild">هذا العنصر مطلوب</string>
+    <string name="requiredField">هذا العنصر مطلوب</string>
     <string name="english">انجليزي</string>
     <string name="arabic">عربي</string>
 
@@ -20,4 +20,9 @@
         <item>@string/english</item>
     </string-array>
     <string name="edite">تعديل</string>
+    <string name="night_mode">الوضع الليلي</string>
+    <string name="edite_task">تعديل التاسك</string>
+    <string name="cantEditeThisTask">لا يمكن تعديل التاسك</string>
+    <string name="taskDeleteSuccessfully">تم مسح المهمه بنجاح</string>
+    <string name="undo">رجوع</string>
 </resources>
