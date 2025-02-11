@@ -6,6 +6,9 @@
 - **Simple and User-Friendly UI 🎨** – Clean and intuitive design.
 - **Persistent Task Storage 💾** – Tasks are saved even after closing the app.
 - **Edit Existing Tasks 🔄** – Modify tasks as needed.
+- Supports Arabic & English 🌍 – Switch between languages effortlessly.
+
+- Dark Mode Support 🌙 – Enjoy a comfortable experience in low-light environments.
 
 ### Installation:
 1. Clone the repository:
