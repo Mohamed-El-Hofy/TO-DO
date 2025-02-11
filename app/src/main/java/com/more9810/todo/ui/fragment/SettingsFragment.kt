@@ -50,7 +50,7 @@ class SettingsFragment : Fragment() {
         binding.autoCompLanguage.setAdapter(arrAdapter)
 
         binding.autoCompLanguage.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
                 val item = parent.getItemAtPosition(position).toString()
                 val langCode = when (item) {
                     resources.getString(R.string.arabic) -> "ar"
@@ -68,23 +68,16 @@ class SettingsFragment : Fragment() {
         val nightMode = sharedPreferences.getBoolean(Const.NIGHT_MODE, false)
 
         binding.switchMode.isChecked = nightMode
-        if (nightMode) {
-            binding.switchMode.isChecked = true
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-        binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
 
+        binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
+            editor?.putBoolean(Const.NIGHT_MODE, isChecked)
+            editor?.apply()
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                editor?.putBoolean(Const.NIGHT_MODE, true)
-                editor?.apply()
-
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                editor?.putBoolean(Const.NIGHT_MODE, false)
-                editor?.apply()
-
             }
+            requireActivity().recreate()
         }
 
     }
