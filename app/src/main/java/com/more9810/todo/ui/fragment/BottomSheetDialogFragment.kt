@@ -7,7 +7,6 @@ import android.text.format.DateFormat.is24HourFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.BundleCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.datepicker.CalendarConstraints
@@ -62,7 +61,7 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
             binding.tvAddTaskLogo.text = resources.getString(R.string.edite_task)
             binding.etTask.setText(argTask.task)
             binding.tvDate.text = SimpleDateFormat(
-                resources.getString(R.string.standerFormateDate), Locale.getDefault()
+                resources.getString(R.string.standerFormatDate), Locale.getDefault()
             ).format(date ?: 0)
             binding.tvTime.text = time ?: "0"
         }
@@ -108,17 +107,17 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
         var isValid = true
 
         if (binding.etTask.text.isNullOrBlank()) {
-            binding.etTask.error = getString(R.string.requardFeild)
+            binding.etTask.error = getString(R.string.requiredField)
             isValid = false
         }
 
         if (date == null) {
-            binding.tvDate.error = getString(R.string.requardFeild)
+            binding.tvDate.error = getString(R.string.requiredField)
             isValid = false
         }
 
         if (time.isNullOrBlank()) {
-            binding.tvTime.error = getString(R.string.requardFeild)
+            binding.tvTime.error = getString(R.string.requiredField)
             isValid = false
         }
 
@@ -137,7 +136,7 @@ class BottomSheetDialogFragment : BottomSheetDialogFragment() {
         datePicker.addOnPositiveButtonClickListener {
 
             val dateFormat = SimpleDateFormat(
-                resources.getString(R.string.standerFormateDate), Locale.getDefault()
+                resources.getString(R.string.standerFormatDate), Locale.getDefault()
             ).format(datePicker.selection)
             binding.tvDate.text = dateFormat
             date = datePicker.selection

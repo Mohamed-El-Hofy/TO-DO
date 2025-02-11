@@ -1,36 +1,30 @@
+package com.more9810.todo.utils
+
 import android.content.Context
+import android.content.res.Configuration
 import java.util.Locale
 
+
 object LocaleHelper {
+    private const val PREFS_NAME = "app_prefs"
+    private const val KEY_LANGUAGE = "language"
 
-    private const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
-
-    fun setLocale(context: Context, language: String): Context {
-        persist(context, language)
-        return updateResources(context, language)
+    fun saveLanguage(context: Context, language: String) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_LANGUAGE, language).apply()
     }
 
-    fun loadLocale(context: Context): Context {
-        val language = getPersistedData(context, "en") // اللغة الافتراضية
-        return setLocale(context, language)
+    private fun getSavedLanguage(context: Context): String {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_LANGUAGE, Locale.getDefault().language) ?: "en"
     }
 
-    private fun getPersistedData(context: Context, defaultLanguage: String): String {
-        val preferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        return preferences.getString(SELECTED_LANGUAGE, defaultLanguage) ?: defaultLanguage
-    }
-
-    private fun persist(context: Context, language: String) {
-        val preferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        preferences.edit().putString(SELECTED_LANGUAGE, language).apply()
-    }
-
-    private fun updateResources(context: Context, language: String): Context {
+    fun updateLocale(context: Context): Context {
+        val language = getSavedLanguage(context)
         val locale = Locale(language)
         Locale.setDefault(locale)
 
-        val resources = context.resources
-        val config = resources.configuration
+        val config = Configuration()
         config.setLocale(locale)
 
         return context.createConfigurationContext(config)

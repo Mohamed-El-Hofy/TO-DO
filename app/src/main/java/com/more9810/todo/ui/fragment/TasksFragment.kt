@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.more9810.todo.R
 import com.more9810.todo.adapter.TaskRecyclerAdapter
 import com.more9810.todo.databinding.FragmentTasksBinding
 import com.more9810.todo.model.local.TaskDatabase
@@ -57,8 +58,8 @@ class TasksFragment : Fragment() {
 
     private fun unDoDeleteTask(task: Task, position: Int) {
         val snackBar = Snackbar.make(requireContext(), requireView(), "", Snackbar.LENGTH_LONG)
-        snackBar.setText("Task Delete Successfully")
-        snackBar.setAction("Undo") {
+        snackBar.setText(resources.getString(R.string.taskDeleteSuccessfully))
+        snackBar.setAction(resources.getString(R.string.undo)) {
             db.addTask(task)
             adapter.addNewTask(task, position)
         }
@@ -100,7 +101,7 @@ class TasksFragment : Fragment() {
     private fun initCalenderView() {
         binding.calendarView.selectedDate = CalendarDay.today()
 
-        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+        binding.calendarView.setOnDateChangedListener { _, date, selected ->
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.YEAR, date.year)
             calendar.set(Calendar.MONTH, date.month + 1)

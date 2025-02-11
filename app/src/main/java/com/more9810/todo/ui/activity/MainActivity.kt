@@ -1,11 +1,11 @@
 package com.more9810.todo.ui.activity
 
-import LocaleHelper
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -20,17 +20,19 @@ import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
 import com.more9810.todo.utils.Const
-import java.util.Locale
+import com.more9810.todo.utils.LocaleHelper
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var splashScreen: SplashScreen
     private var isSplashScreenViewed: Boolean = true
-
     private var tasksFragment: TasksFragment? = null
     private var settingsFragment: SettingsFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changThem()
+
         splashScreen = installSplashScreen()
         setupSplashScreen()
 
@@ -45,18 +47,30 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentByTag("SettingsFragment()") as? SettingsFragment
                 ?: SettingsFragment()
 
-        localizeLang()
+
+//        localizeLang()
         setNavigation()
         onFabClicked()
     }
 
-    private fun localizeLang() {
-        val sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE)
-        val lang = sharedPref.getString("app_lang", Locale.getDefault().language)
-        LocaleHelper.setLocale(this, lang ?: "en")
-        LocaleHelper.loadLocale(this)
+    private fun changThem() {
+        val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
+        val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
+
+        if (nightMode == true && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            recreate()
+        } else if (nightMode == false && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            recreate()
+        }
+
+
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.updateLocale(newBase))
+    }
 
     private fun setNavigation() {
         val menu = binding.bottomNavigation.menu
@@ -72,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.fragSitings -> {
                     showFragment(settingsFragment!!, "SettingsFragment()")
-                    binding.toolbar.tvAppBarTitle.text = "Setteings"
+                    binding.toolbar.tvAppBarTitle.text = resources.getString(R.string.settings)
                 }
 
                 else -> showFragment(TasksFragment(), "")
