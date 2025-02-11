@@ -23,7 +23,7 @@
 ### Video Demo:
 Watch the application in action:
 
-https://github.com/user-attachments/assets/ec339602-1d78-4a68-863c-29a547c9b86e
+https://github.com/user-attachments/assets/31f7006f-a6f2-41ac-83fb-30e060ab7f20
 
 ### Contributions:
 Feel free to contribute by submitting issues or pull requests!
