@@ -1,7 +1,8 @@
 package com.more9810.todo.utils
 
 import android.content.Context
-import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 
@@ -12,21 +13,16 @@ object LocaleHelper {
     fun saveLanguage(context: Context, language: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_LANGUAGE, language).apply()
+        val localeList = LocaleListCompat.forLanguageTags(language)
+        AppCompatDelegate.setApplicationLocales(localeList)
     }
 
-    private fun getSavedLanguage(context: Context): String {
+     fun getSavedLanguage(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_LANGUAGE, Locale.getDefault().language) ?: "en"
+        return prefs.getString(KEY_LANGUAGE, getCurrentLanguage()) ?: "en"
     }
 
-    fun updateLocale(context: Context): Context {
-        val language = getSavedLanguage(context)
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-
-        val config = Configuration()
-        config.setLocale(locale)
-
-        return context.createConfigurationContext(config)
+    private fun getCurrentLanguage(): String {
+        return AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
     }
 }

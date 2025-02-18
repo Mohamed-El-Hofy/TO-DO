@@ -1,5 +1,6 @@
 package com.more9810.todo.ui.activity
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -20,7 +21,6 @@ import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
 import com.more9810.todo.utils.Const
-import com.more9810.todo.utils.LocaleHelper
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -48,11 +48,16 @@ class MainActivity : AppCompatActivity() {
                 ?: SettingsFragment()
 
 
-//        localizeLang()
+
         setNavigation()
         onFabClicked()
     }
+    companion object{
+        fun restartActivity(activity: Activity) {
+            activity.recreate()
 
+        }
+    }
     private fun changThem() {
         val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
         val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
@@ -65,12 +70,9 @@ class MainActivity : AppCompatActivity() {
             recreate()
         }
 
-
     }
 
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleHelper.updateLocale(newBase))
-    }
+
 
     private fun setNavigation() {
         val menu = binding.bottomNavigation.menu
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.tvAppBarTitle.text = resources.getString(R.string.settings)
                 }
 
-                else -> showFragment(TasksFragment(), "")
+                else -> tasksFragment?.let { showFragment(it, "TaskFragment()") }
             }
             return@setOnItemSelectedListener true
         }

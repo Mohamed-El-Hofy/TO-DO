@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.more9810.todo.R
 import com.more9810.todo.databinding.FragmentSetnigsBinding
+import com.more9810.todo.ui.activity.MainActivity.Companion.restartActivity
 import com.more9810.todo.utils.Const
 import com.more9810.todo.utils.LocaleHelper
 import java.util.Locale
@@ -58,7 +59,7 @@ class SettingsFragment : Fragment() {
                     else -> Locale.getDefault().language
                 }
                 LocaleHelper.saveLanguage(requireContext(), langCode)
-                requireActivity().recreate()
+                restartActivity(requireActivity())
             }
     }
 
