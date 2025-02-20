@@ -14,13 +14,12 @@
     <string name="requiredField">هذا العنصر مطلوب</string>
     <string name="english">انجليزي</string>
     <string name="arabic">عربي</string>
+    <string name="night">ليلي</string>
+    <string name="light">نهاري</string>
 
-    <string-array name="languageArr">
-        <item>@string/arabic</item>
-        <item>@string/english</item>
-    </string-array>
+
     <string name="edite">تعديل</string>
-    <string name="night_mode">الوضع الليلي</string>
+    <string name="mode">الوضع</string>
     <string name="edite_task">تعديل التاسك</string>
     <string name="cantEditeThisTask">لا يمكن تعديل التاسك</string>
     <string name="taskDeleteSuccessfully">تم مسح المهمه بنجاح</string>

@@ -13,11 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TODO"
         tools:targetApi="31">
-        <activity
-            android:name=".ui.activity.TestActivity"
-            android:exported="true">
 
-        </activity>
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
@@ -28,6 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
 </manifest>

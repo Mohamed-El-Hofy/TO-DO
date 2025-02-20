@@ -1,17 +1,13 @@
 package com.more9810.todo.ui.activity
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsCompat.CONSUMED
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -20,7 +16,6 @@ import com.more9810.todo.databinding.ActivityHomeBinding
 import com.more9810.todo.ui.fragment.BottomSheetDialogFragment
 import com.more9810.todo.ui.fragment.SettingsFragment
 import com.more9810.todo.ui.fragment.TasksFragment
-import com.more9810.todo.utils.Const
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -28,17 +23,13 @@ class MainActivity : AppCompatActivity() {
     private var isSplashScreenViewed: Boolean = true
     private var tasksFragment: TasksFragment? = null
     private var settingsFragment: SettingsFragment? = null
+    private var currentFragmentTag: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changThem()
-
-        splashScreen = installSplashScreen()
         setupSplashScreen()
-
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         systemBars()
 
         tasksFragment = supportFragmentManager.findFragmentByTag("TaskFragment()") as? TasksFragment
@@ -47,31 +38,33 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentByTag("SettingsFragment()") as? SettingsFragment
                 ?: SettingsFragment()
 
-
-
         setNavigation()
         onFabClicked()
+        getSavedInstant(savedInstanceState)
     }
-    companion object{
-        fun restartActivity(activity: Activity) {
-            activity.recreate()
 
+    private fun getSavedInstant(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            currentFragmentTag = savedInstanceState.getString("CURRENT_FRAGMENT")
+            if (currentFragmentTag != null) {
+                val fragment = supportFragmentManager.findFragmentByTag(currentFragmentTag)
+                if (fragment != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameContainer, fragment, currentFragmentTag).commit()
+                }
+            }
+        } else {
+            binding.bottomNavigation.selectedItemId = R.id.fragTasks
         }
     }
-    private fun changThem() {
-        val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
-        val nightMode = sharedPreferences?.getBoolean(Const.NIGHT_MODE, false)
 
-        if (nightMode == true && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            recreate()
-        } else if (nightMode == false && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            recreate()
-        }
 
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("CURRENT_FRAGMENT", currentFragmentTag)
     }
-
 
 
     private fun setNavigation() {
@@ -95,11 +88,12 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnItemSelectedListener true
         }
-        binding.bottomNavigation.selectedItemId = R.id.fragTasks
     }
 
     private fun showFragment(fragment: Fragment, tag: String) {
+        currentFragmentTag = tag
         supportFragmentManager.beginTransaction().replace(R.id.frameContainer, fragment, tag)
+
             .commit()
     }
 
@@ -117,6 +111,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupSplashScreen() {
+        splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { isSplashScreenViewed }
         Handler(Looper.getMainLooper()).postDelayed({ isSplashScreenViewed = false }, 100)
     }
@@ -128,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             v.updateLayoutParams {
                 binding.main.updatePadding(bottom = systemBars.bottom)
             }
-            return@setOnApplyWindowInsetsListener CONSUMED
+            return@setOnApplyWindowInsetsListener insets
 
         }
 

@@ -16,8 +16,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
 class TasksFragment : Fragment() {
-
-
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
     private var adapter = TaskRecyclerAdapter()
